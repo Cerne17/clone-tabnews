@@ -58,3 +58,28 @@ Implementação end-to-end do https://tabnews.com.br desenvolvido durante o http
   1. Estágio 1: início
   2. Estágio 2: Progresso
   3. Estágio 3: Conclusão
+
+# Dia 11: DNS (Domain Name System)
+
+## Fast-Track
+
+- DNS faz a conversão de IP para Domínio
+  - IP: Internet Protocol
+
+Comunicação:
+
+1. Computador -> Servidor DNS
+
+- Requere o IP de um Domínio em específico
+
+2. Servidor DNV -> Computador
+
+- Obtém o IP do Site requerido
+
+3. Computador -> Servidor do Domínio/IP
+
+- Firma, de fato, a conexão
+
+4. Servidor do Domínio/IP -> Computador
+
+- Serve os arquivos requeridos
