@@ -83,3 +83,48 @@ Comunicação:
 4. Servidor do Domínio/IP -> Computador
 
 - Serve os arquivos requeridos
+
+# Dia 12: A Prática do DNS
+
+## Fast-Track: Resumão
+
+1. Comprar um domínio .com.br
+
+2. Configurar um servidor autoritativo
+
+3. Aula Extra
+
+- Capture the flag
+
+![Esquemático de como Registrar um domínio](./doc-assets/dns-schema.png)
+
+## Slow-Track: Registrar um domínio público
+
+Acessar um Registrador de Domínios
+
+- Registro.br
+- Hostgator
+- UOL Host
+- Locaweb
+- ...
+
+Os domínios não são armazenados nos registradores, mas sim em um `registry` centralizado.
+
+- nic.br (para domínios .br)
+- DNS Propagation Checker (whatsmydns.net)
+
+## Slow-Track: Configurar o Servidor DNS
+
+Antes de configurar o DNS, seu sistema está no seguinte estado:
+
+![Estado antes configuração DNS](./doc-assets/pre-dns-config.png)
+
+Precisamos então, do nosso próprio servidor autoritativo, para atualizarmos o Registrador, que propagará esta atualização para o restante do sistema.
+
+### Etapas:
+
+- Declarar o Domínio dentro do Vercel DNS
+  - Por padrão, a Vercel não é configurada como servidor autoritativo, precisamos configurá-lo para isso
+  - Além disso, ainda usa um `A Record` apontando para este endereço de `IP`
+- Mudar o apontamento do DNS no seu serviço de `Registry` com os endereços disponibilizados na Vercel
+  ![Estado após configuração DNS](./doc-assets/post-dns-config.png)
