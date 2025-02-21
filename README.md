@@ -37,7 +37,46 @@ Carl Sagan: "Se você deseja fazer uma torta de maça do zero, você deve, prime
 - React-dom => Indica ao react que é uma aplicação rendenizada no browser
   - v18.2.0
 
+# Dia 4:
 
+# Fast-Track:
+
+- protocolos:
+  - HTTP => hypertext transfer protocol => documentos referenciando a outros documentos
+  - FTP => file transfer protocol => transferência de arquivos
+  - SMTP => simple mail transfer protocol => transferência de mensagens de email
+- UDP vs TCP, qual a diferença?
+
+# Slow-Track: Protocolos e Rodando o Projeto
+
+- O que é um serviço web?
+  - Base em protocolos
+- Exemplo: telefone sem fio
+  - crianças => proxy
+  - mensagem => payload
+  - sussuro => protocolo -> problema: sem conferência de erro
+- TCP
+  - tem processo de error recovery => exemplo: enviar packets de novo
+- Montagem de protocolos
+  ![Montagem de Protocolos](./doc-assets/protocol-mount.png)
+
+### Quando não é importante a integridade de todos packets
+
+- Usamos o UDP (User Datagram Protocol)
+  - Datagram => pedaço de informação autocontido
+    - cada packet é autosuficiente e independe de qualquer handshake
+  - jogos online
+    ![UDP](./doc-assets/udp-protocol.png)
+  - Lag surge da Interpolação ("chute" da posição entre as duas posições)
+
+### TCP/IP vs UDP
+
+- Com 0 latência e 0% de packet-loss => UDP === TCP/IP
+- Com o aumento da latência / packet-loss
+  - UDP parece mais fluido graças à interpolação
+    - Interpola e ignora packets perdidos
+  - TCP/IP mais travado porém mais preciso
+    - Recupera todos packets perdidos
 
 # Dia 9
 
