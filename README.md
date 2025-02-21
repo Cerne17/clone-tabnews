@@ -810,3 +810,189 @@ Onde o `get` indica o método/verbo http que vamos testar neste arquivo. No caso
   - put
   - delete
   - ...
+
+# Dia 17
+
+## Fast-Track
+
+- Processo de escolha das tech-stacks do Back-end
+- Começamos a levantar o BD
+- Docker
+
+## Slow-Track: Por que o Docker dominou o mundo
+
+### Como escolher um Database:
+
+1. Que DBMS usar - Data Base Management System
+2. Como fazer Queries
+3. Como executar as Migrations
+
+DBMS - Database Management System
+
+- O que as pessoas entendem como o "pacotão do banco de dados"
+
+  - MySQL
+  - PostgreSQL - Postgres
+  - Oracle Database
+  - Microsoft SQL Server
+  - MongoDB
+
+- ORM
+
+  - Object-Relational Mapping (Mapeamento Objeto-Relacional)
+    - Abstração que conecta o mundo dos BD's relacionais com o mundo de OOP
+    - Abstrai a conexão com o Database, podendo trocar o Database de forma simples
+
+- Tipos de DBMS
+
+  - **Relacional**
+  - **Não-Relacional**
+    - Armazenamento de documentos
+    - Armazenamento Chave-Valor
+  - Série Temporal
+  - Espacial
+
+- SQL - Structures Query Language
+  - SELECT
+  - INSERT
+  - UPDATE
+  - DELETE
+  - ...
+
+### Escolhas para o tabnews
+
+- **DBMS**: PostgreSQL
+- **Query**: SQL Puro, na mão, sem ORM
+  - pg como conector com o banco de dados (node-postgres npm module)
+- **Migrations**: node-pg-migrate
+  - é um arquivo que instrui uma modificação em um banco de dados
+  - deve-se ser atualizado para versionar seu banco de dados
+
+## Slow-Track: Subindo o Banco de Dados (Local)
+
+### Usando Docker e Docker Compose
+
+Criamos os `compose.yaml` na raiz do projeto (configuração padrão do docker):
+
+```yaml
+services:
+  database:
+    image: "postgres:16.7-alpine3.20"
+    environment:
+      POSTGRES_PASSWORD: "local_password"
+```
+
+Assim, subimos o docker fazendo `docker compose up`.
+
+O container afirma que está pronto para conexões, mas - por ora - isso é uma mentira, pois o container não expõe nenhuma porta para conexões!
+
+Note que, se você rodar seu ambiente de desenvolvimento localmente (ao invés de rodar no codespaces, por exemplo), você deve estar com o docker desktop aberto, para que o docker consiga se conectar com o docker hub e efetivamente acessar as images necessárias.
+
+## Slow-Track: Se conectando no Banco de Dados (Local)
+
+### Tentando se conectar mesmo sabendo que vai dar errado...
+
+Afinal, conhecer **problema** também é **conhecimento**!
+
+Usaremos o psql, client oficial por terminal do postgres
+
+Rodando o docker container no background para podermos utilizar somente um terminal para tudo:
+
+```bash
+$ docker compose up -d # Inicializa o container
+$ docker ps # Se o container for listado, então tudo certo, ele está funcionando!
+```
+
+Instalando o postgresql-client:
+
+```bash
+# Macos
+$ brew install postgresql
+# Ubuntu
+$ sudo apt update
+$ sudo apt install postgresql-client
+```
+
+Verificando a instalação:
+
+```
+$ psql
+psql: error: connection to server on socket "/tmp/.s.PGSQL.5432" failed: No such file or directory
+        Is the server running locally and accepting connections on that socket?
+```
+
+Esse é o output (um erro) esperado!
+
+Agora sim, vamos conectar corretamente e verificar que erro obtemos:
+
+```
+$ psql --host=localhost --username=postgres --port=5432
+psql: error: connection to server at "localhost" (::1), port 5432 failed: Connection refused
+        Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused
+        Is the server running on that host and accepting TCP/IP connections?
+```
+
+Temos esse erro, pois o container não expõe para fora dele a porta 5432, então a conexão é barrada.
+
+### Estudando o estado atual do container
+
+Caso você feche seu ambiente de desenvolvimento ou só queira estudar o estado atual da sua aplicação, temos um passo-a-passo clássico
+
+```bash
+$ docker ps # Lista containeres rodando
+$ docker ps --all # Lista TODOS containeres
+$ docker logs <container-name> # Lista todos logs que aconteceram dentro do container
+$ docker compose down # Destroi o container, no fore- e background
+$ docker compose up -d --force-recreate # Recria o container, sem precisar destruí-lo
+```
+
+ps -> process list
+
+**Status Codes (HTTP) e Exit Codes (Process)**:
+
+| significado | status codes | exit codes |
+| ----------- | ------------ | ---------- |
+| sucesso     | 200          | 0          |
+| erro        | 500          | 255        |
+
+### Expondo a Porta 5432 para fora do container:
+
+No compose.yaml adicionamos o campo de `ports`:
+
+```yaml
+services:
+  database:
+    image: "postgres:16.7-alpine3.20"
+    environment:
+      POSTGRES_PASSWORD: "local_password"
+    ports:
+      - "5432:5432" # "host:container"
+```
+
+### Conectando no container com a porta exposta:
+
+```
+$ psql --host=localhost --username=postgres --port=5432
+Password for user postgres:
+psql (14.17 (Homebrew), server 16.7)
+WARNING: psql major version 14, server major version 16.
+         Some psql features might not work.
+Type "help" for help.
+
+postgres=#
+```
+
+Para sair do banco de dados, insira `\q`. Isso fechará o container, mas ele continuará rodando no background.
+
+### Criando a pasta infra
+
+Criamos a pasta infra para colocar o `compose.yaml`. Como o compose não está mais na raiz do projeto, temos que contornar isso:
+
+```bash
+$ docker compose --file infra/compose.yaml up
+```
+
+### Observação: A senha do Super-user do postgres está vulnerável!
+
+Depois utilizaremos variáveis de ambiente para protegê-la e, obviamente, a senha será alterada, para que a senha vazada propositalmente na versão atual não cause falhas de segurança no sistema.
