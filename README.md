@@ -247,3 +247,132 @@ Precisamos então, do nosso próprio servidor autoritativo, para atualizarmos o 
     - A status page apontava que nada estava errado, mas isso se deu pelo fato da página em si não estar funcional
 
 # Dia 14
+
+## Fast-Track
+
+- Comprometer com organização de arquivos/pastas: Over- e Underengineering
+  - Um software deve estar o mais modificável possível
+
+## Bônus: PoC e MVP ajudam MESMO
+
+- PoC: Proof of Concept
+  - Criar versões mínimas e temporárias de um conceito, que será descartado posteriormente
+- MVP: Minimum Viable Product
+  - Depois de gerar quantas PoC's necessárias, criar o MVC
+  - Será uma "DEMO" do seu produto final, com as principais features, de forma que um usuário entenda como o sistema final deve funcionar, apesar de estar incompleto
+
+## Slow-Track: Inauguração Milestone 1 Fundação
+
+- Criação da Milestone 1
+- Criação de Features
+
+## Slow-Track: Uma história macabra sobre Overengineering
+
+- Overengineering: Excesso de Engenharia
+
+![Complexidade x Tempo de carreira](./doc-assets/complexidade-tempo-de-carreira.png)
+
+### Levantamento de requisitos
+
+- Qual linguagem usar para um projeto?
+  - Qual maturidade interna da equipe
+  - Possível contratar profissionais da área
+  - Tem documentação sobre problemas similares ao seu
+  - Serve para o contexto atual
+- Principal aspectos de um software
+  - Linguagem
+  - Arquitetura
+  - Modelagem
+  - Testes Automatizados
+  - **Modificabilidade**
+
+## Slow-Track: Proposta de Arquitetura e Pastas
+
+- Primeira Issue da Milestone 1
+- Primeira Etapa: Definir a linguagem de programação
+  - Javascript
+- Organização de Pastas e Arquitetura de Software NÃO são a mesma coisa
+  - É possível implementar MVC ou Clean Architecture em uma única pasta
+    - Ou até em um único arquivo
+
+### Organização de Pastas
+
+├ ─ └ │
+
+**Primeira Proposta (Deschamps)**
+
+```
+📦 root
+  ├ 📂 core # Tudo o que é da nossa responsabilidade
+  ├ 📂 web  # Tudo o que é responsabilidade do Next.js
+  └ tests  # Testes automatizados
+```
+
+```
+📦 root
+  ├ 📂 core
+  │  ├ 📂 components
+  │  ├ 📂 database
+  │  │  ├ 📂 migrations
+  │  │  └ 📜 index.js
+  │  └ 📂 models
+  │  │  ├ 📜 user.js
+  │  │  └ 📜 post.js
+  ├ 📂 web
+  │  ├ 📂 pages
+  │  │  ├ 📂 api
+  │  │  │  └ 📂 news
+  │  │  │  │  └ 📜 index.js
+  │  │  ├ 📂 noticia
+  │  │  │  └ 📜 [slug].js
+  │  │  └ 📜 index.js
+```
+
+- Daria dor de cabeça fazer assim, devido à forma que o Next.js funciona
+  - Isolando as partes do sistema
+
+**Segunda Proposta**
+
+- Deixando o Next.js gerir o código completo
+- Ainda sim, isolando o que é o Next.js e as regras de negócio
+  - Regras de Negócio seria o antigo "core"
+
+```
+📦 root
+  ├ 📂 pages
+  ├ 📂 models
+  ├ 📂 infra
+  ├ 📂 tests # Testes Automatizados
+  └ ...
+```
+
+```
+📦 root
+  ├ 📂 pages
+  │  ├ 📜 index.js # Home
+  ├ 📂 models
+  │  ├ 📜 user.js
+  │  ├ 📜 content.js
+  │  └ 📜 password.js
+  ├ 📂 infra
+  │  ├ 📜 database.js # Biblioteca de conexão com o db
+  │  ├ 📂 migrations
+  │  └ 📂 provisioning # Infra as a Code (Terraform)
+  │  │  ├ 📂 staging # Homologação
+  │  │  ├ 📂 production
+  ├ 📂 tests # Testes Automatizados
+  └ ...
+```
+
+### Arquitetura de Software
+
+- O que é
+  - Definição do Escopo dos Componentes
+  - Tipo de Interação entre os Componentes
+- MVC
+  - Model
+    - Ruim: Model com muitas responsabilidades
+  - View
+  - Controller
+  - Criado em 1979
+- Uma arquitetura simples com uma ótima modelagem, te faz ir LONGE
