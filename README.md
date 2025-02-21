@@ -2,6 +2,43 @@
 
 Implementação end-to-end do https://tabnews.com.br desenvolvido durante o https://curso.dev do Filipe Deschamps
 
+# Dia 3:
+
+## Fast-Track:
+
+- versão do node: lts/hydrogen
+- .nvmrc
+
+## Slow-Track:
+
+Carl Sagan: "Se você deseja fazer uma torta de maça do zero, você deve, primeiro, criar o universo".
+
+- Analysis Paralysis
+  - Analisar demais sobre uma escolha, ao ponto de se paralizar
+
+### Node.JS:
+
+- Controle de versão: nvm
+- node -v => v19.6.0
+- nvm ls
+  - lista as versões do node
+- nvm install lts/hydrogen => versão LTS (long term support) usada no curso
+- nvm alias default <version>
+  - escolhe a versão (<version>) como o default
+- .nvmrc => explicita versão do node
+  - rc => run command
+
+### Modulos:
+
+- Next.js => full-stack (made by Vercel)
+  - v13.1.6
+- React.js => front-end
+  - v18.2.0
+- React-dom => Indica ao react que é uma aplicação rendenizada no browser
+  - v18.2.0
+
+
+
 # Dia 9
 
 ## Slow-Track: Segredo para organização de tarefas
