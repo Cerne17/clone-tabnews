@@ -482,3 +482,47 @@ Temos um teste passando (2 + 2 = 2 \* 2 = 4), mas temos outro falhando (2 + 5 !=
 ### Teste e Feature criada pela segunda dinâmica (TDD)
 
 - Os testes orientam o que deve acontecer no código
+
+# Dia 16
+
+## Fast-Track
+
+- Interface para Humanos - Interface Gráfica
+- Interface para Máquina - Interface Programática
+  - API - Application Programming Interface
+    - Assim como a interface gráfica é um tipo de interface mais fácil de um humano ler e interpretar, uma API é um tipo de interface mais fácil de uma máquina interpretar
+- charset utf-8
+  - curl (client url)
+
+### Ser um profissional melhor:
+
+- Enquanto ficarmos vislumbrados com a magia da nossa área, estamos usando nossa energia de forma errada
+- Temos que entender a mágica das tecnologias, para dominá-las e não o contrário
+- Só assim, vamos conseguir impactar a vida das pessoas!
+
+## Slow-Track: A maior briga no universo dos Testes Automatizados
+
+- Testes Unitários vs Testes de Integração
+- Issue: Banco de Dados (Local)
+- Divisão dos `./tests`
+  - `./tests/unit` # Exemplo da calculadora
+  - `./tests/integration` # Integrações ou Camadas da aplicação
+
+### Modelo de Pirâmide de Testes
+
+![Mike Cohn (Martin Fowler) Pirâmide de Testes](./doc-assets/piramide-de-testes.png)
+Criada por Mike Cohn (2009), em seu livro `Succeding with Agile`.
+
+### Modelos Troféu de Testes (Front-end) & Favos de Mel (Back-end)
+
+![Troféu de Testes (rauchg)](./doc-assets/trofeu-de-testes.png)
+Criado pelo Rauch, criador da Vercel, mostra como deve ser a presença de testes para o Front-end.
+
+![Favos de Mel (Spotify)](./doc-assets/teste-favo-de-mel.png)
+Criada pela Spotify, mostra como deve ser a presença de testes para o Back-end.
+
+### Modelo Falta de Tempo do Pagar.me
+
+Neste modelo, temos bom-senso e sabemos que não é possível implementarmos todos os tipos de teste e, então, escolhemos - com base no formato de nosso sistema - qual tipo de teste vamos implementar única e exclusivamente.
+
+Geralmente, também graças ao bom-senso, escolhemos os testes de integração, haja vista que esses já são capazes de identificar quaisquer problemas no encaixe das peças do sistema, sem precisar gastar horas e horas configurando um sistema completo para os testes E2E. (E, de quebra, testamos se as peças funcionam, já que para o encaixe funcionar, as peças devem estar funcionando também 🤯)
