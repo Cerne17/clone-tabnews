@@ -204,3 +204,46 @@ Precisamos então, do nosso próprio servidor autoritativo, para atualizarmos o 
   - Além disso, ainda usa um `A Record` apontando para este endereço de `IP`
 - Mudar o apontamento do DNS no seu serviço de `Registry` com os endereços disponibilizados na Vercel
   ![Estado após configuração DNS](./doc-assets/post-dns-config.png)
+
+# Dia 13
+
+## Slow-Track: Página em Construção e Encerramento do Milestone 0
+
+- Ideia McDonald's - McDonald's theory (John Bell)
+  - Num dia em que todo mundo quer sair para almoçar mas ninguém tem ideia de onde
+  - Alguém sugere o McDonald's (batido, ninguém quer)
+  - Então gera uma "revolta"/união entre as pessoas
+  - Diversas ideias e sugestões de onde comer começam a surgir
+  - Funciona para destravar um time ou sua própria ideia
+  - Ajuda a pensar em o que precisa ser
+    - Feito
+    - Protegido
+    - Repetido
+
+## Slow-Track: Não confie em nenhum serviço 🛑
+
+- Nenhum serviço terá uptime de 100%
+- Maioria dos serviços se comprometem a ter um uptime de 99.9%
+  - 9h / Ano (Downtime)
+  - 44min / Mês (Downtime)
+- Downtime é avisado através do SLA
+  - Service level Agreement
+  - Acordo de nível de Serviço
+
+### Status Pages
+
+- Páginas para mostrar a saúde dos sistemas utilizados no sistema
+- Pesquisar "<serviço> status"
+  - Exemplo: "Vercel status"
+    - Tem históricos
+    - Saúde de todos os serviços deles
+    - Status atual do sistema geral e de seus sub-sistemas
+  - Exemplo: "AWS status"
+    - Mostra o overview geral
+    - Dá opções de expandir para cada serviço da AWS
+- Não acreditar 100% nem nas páginas de status!
+  - As páginas de status também podem cair
+  - Exemplo: Falha total nos serviços da AWS
+    - A status page apontava que nada estava errado, mas isso se deu pelo fato da página em si não estar funcional
+
+# Dia 14
