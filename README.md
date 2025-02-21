@@ -297,8 +297,6 @@ Precisamos então, do nosso próprio servidor autoritativo, para atualizarmos o 
 
 ### Organização de Pastas
 
-├ ─ └ │
-
 **Primeira Proposta (Deschamps)**
 
 ```
@@ -376,3 +374,111 @@ Precisamos então, do nosso próprio servidor autoritativo, para atualizarmos o 
   - Controller
   - Criado em 1979
 - Uma arquitetura simples com uma ótima modelagem, te faz ir LONGE
+
+# Dia 15: Testes Automatizados
+
+## Fast-Track
+
+- Test Runners
+  - Mocha
+  - AVA (Testes de forma concorrente)
+  - Playwrite (End-to-End)
+  - **Jest** (v29.6.2)
+- Jest
+  - Scripts
+    - `"test": "jest"`
+    - `"test:watch": "jest --watch"`
+- TDD
+  - Test-Driven-Development
+  - Escreve-se o teste primeiro, depois programa-se para obter o resultado esperado no teste
+
+## Slow-Track: Test Runner (Test Framework)
+
+- A testagem previne 'Regressão' (uma feature deixar de funcionar com a evolução do código)
+- Jest
+  - Criado pelo Facebook
+  - Criado para testar aplicações React (atualmente é usado para outras finalidades)
+- Para rodar os scripts podemos rodar:
+  - npm run test
+  - npm test
+  - npm run test:watch
+
+## Slow-Track: Criar um Teste de Teste
+
+- Programando uma calculadora
+- Utilizando o test:watch
+- Criamos `./tests/`
+
+## Slow-Track: Criando um teste de verdade
+
+- Duas Dinâmicas
+  - Programar a Feature e depois deselvover testes para ver se a mesma funciona
+  - Criar códigos com base no funcionamento esperado da feature e - só então - programá-la
+- Criamos a pasta `models`
+
+### Teste e Feature criada pela primeira dinâmica
+
+```JS
+//./models/calculadora.js
+function somar(arg1, arg2) {
+  return arg1 + arg2;
+}
+
+exports.somar = somar; // CommonJS (ESM ou ES6 Modules)
+```
+
+- Regulado pelo TC39
+- Jest na versão atual não suporta ES6 Modules
+  - Precisamos fazer um transpiling
+    - Converte o código de uma versão incompatível para uma compatível
+
+```JS
+// ./tests/calculadora.test.js
+const calculadora = require("../models/calculadora.js");
+
+test("somar 2 mais 2", () => {
+  const resultado = calculadora.somar(2, 2);
+  expect(resultado).toBe(4);
+});
+```
+
+Para esse exemplo, o output esperado do `jest --watch` seria:
+![output jest calculadora (soma)](./doc-assets/jest-calculadora-soma-1.png)
+
+Agora, introduzimos um bug intencionalmente no sistema:
+
+```JS
+// ./models/calculadora.js
+function somar(num1, num2) {
+  return num1 * num2; // Multiplicação, não soma
+}
+
+exports.somar = somar; // CommonJS
+```
+
+E adicionamos mais testagens para verificar outros casos de uso.
+
+```JS
+// ./tests/calculadora.test.js
+const calculadora = require("../models/calculadora.js");
+
+test("somar 2 + 2 deveria retornar 4", () => {
+  const resultado = calculadora.somar(2, 2);
+  expect(resultado).toBe(4);
+});
+
+test("somar 2 + 5 deveria retornar 7", () => {
+  const resultado = calculadora.somar(2, 5);
+  expect(resultado).toBe(7);
+});
+```
+
+E, agora o output esperado do jest seria:
+
+![output jest calculadora (soma)](./doc-assets/jest-calculadora-soma-2.png)
+
+Temos um teste passando (2 + 2 = 2 \* 2 = 4), mas temos outro falhando (2 + 5 != 2 \* 5)
+
+### Teste e Feature criada pela segunda dinâmica (TDD)
+
+- Os testes orientam o que deve acontecer no código
