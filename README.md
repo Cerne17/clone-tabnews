@@ -526,3 +526,287 @@ Criada pela Spotify, mostra como deve ser a presença de testes para o Back-end.
 Neste modelo, temos bom-senso e sabemos que não é possível implementarmos todos os tipos de teste e, então, escolhemos - com base no formato de nosso sistema - qual tipo de teste vamos implementar única e exclusivamente.
 
 Geralmente, também graças ao bom-senso, escolhemos os testes de integração, haja vista que esses já são capazes de identificar quaisquer problemas no encaixe das peças do sistema, sem precisar gastar horas e horas configurando um sistema completo para os testes E2E. (E, de quebra, testamos se as peças funcionam, já que para o encaixe funcionar, as peças devem estar funcionando também 🤯)
+
+## Slow-Track: Encostando as mãos no protocolo HTTP
+
+- Termo Endpoint: Ponto Final!
+  - Utilizamos endpoints para falar de endereços de APIs
+    - Application Programming Interface
+    - Interface de Programação de Aplicações
+- Interfaces e Abstrações existem para evitar que você tenha que mexer nos detalhes das aplicações
+  - Causa muitas espaguetificações, já que você pode mexer com algo que não entende...
+- Diferença de um Endpoint de uma API e de uma página de um site
+  - Endpoint é programável, a página não
+  - Tem públicos alvo diferentes
+- Tipos de Interface
+  - TUI: Text-based User Interface
+  - GUI: Graphics-based user Interface
+
+### Usando o CURL para estudar o protocolo HTTP
+
+- CURL: Client URL
+
+```
+$ curl http:localhost:3000/api/status
+{ "mensagem": "Os alunos do curso.dev são brabos" }
+```
+
+```
+$ curl http:localhost:3000/api/status --verbose
+* Host localhost:3000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:3000...
+* Connected to localhost (::1) port 3000
+> GET /api/status HTTP/1.1
+> Host: localhost:3000
+> User-Agent: curl/8.6.0
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< Content-Type: application/json; charset=utf-8
+< ETag: "d82hl1wzod11"
+< Content-Length: 38
+< Vary: Accept-Encoding
+< Date: Fri, 21 Feb 2025 18:39:38 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+<
+* Connection #0 to host localhost left intact
+{"mensagem":"Os alunos do curso.dev são brabos"}
+```
+
+- Linhas com `*`: Informa o que o curl faz internamente
+- Linhas com `>`: Simboliza o que foi enviado para o servidor (request)
+- Linhas com `<`: Simboliza o que foi recebido do servidor (header da response)
+- Por fim, vemos o body (mensagem)
+
+## Slow-Track: Não é magia! (é protocolo)
+
+### Acessando a Vercel pelo curl
+
+```
+$ curl https://76.76.21.21
+curl: (60) SSL: no alternative certificate subject name matches target host name '76.76.21.21'
+More details here: https://curl.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the web page mentioned above.
+```
+
+Não foi possível verificar nenhum protocolo de segurança no IP fornecido, para burlar isso, usamos o --insecure:
+
+```
+$ curl https://76.76.21.21 --insecure
+Redirecting...
+```
+
+Recebemos só a mensagem `Redirecting...`. Então, puxamos a versão verbose com `--verbose`
+
+```
+$ curl https://76.76.21.21 --insecure --verbose
+*   Trying 76.76.21.21:443...
+* Connected to 76.76.21.21 (76.76.21.21) port 443
+* ALPN: curl offers h2,http/1.1
+* (304) (OUT), TLS handshake, Client hello (1):
+* (304) (IN), TLS handshake, Server hello (2):
+* (304) (IN), TLS handshake, Unknown (8):
+* (304) (IN), TLS handshake, Certificate (11):
+* (304) (IN), TLS handshake, CERT verify (15):
+* (304) (IN), TLS handshake, Finished (20):
+* (304) (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / AEAD-CHACHA20-POLY1305-SHA256 / [blank] / UNDEF
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=no-sni.vercel-infra.com
+*  start date: Jan 16 16:15:00 2025 GMT
+*  expire date: Apr 16 16:14:59 2025 GMT
+*  issuer: C=US; O=Let's Encrypt; CN=R10
+*  SSL certificate verify ok.
+* using HTTP/2
+* [HTTP/2] [1] OPENED stream for https://76.76.21.21/
+* [HTTP/2] [1] [:method: GET]
+* [HTTP/2] [1] [:scheme: https]
+* [HTTP/2] [1] [:authority: 76.76.21.21]
+* [HTTP/2] [1] [:path: /]
+* [HTTP/2] [1] [user-agent: curl/8.6.0]
+* [HTTP/2] [1] [accept: */*]
+> GET / HTTP/2
+> Host: 76.76.21.21
+> User-Agent: curl/8.6.0
+> Accept: */*
+>
+< HTTP/2 308
+< cache-control: public, max-age=0, must-revalidate
+< content-type: text/plain
+< date: Fri, 21 Feb 2025 18:50:00 GMT
+< location: https://vercel.com/
+< refresh: 0;url=https://vercel.com/
+< server: Vercel
+< strict-transport-security: max-age=63072000
+< x-vercel-id: gru1::gd7g5-1740163800375-8a7ff390cf55
+<
+Redirecting...
+* Connection #0 to host 76.76.21.21 left intact
+```
+
+Recebemos o status `308` (Redirecionamento permanente), sendo redirecionados para a Vercel em https://vercel.com/
+
+Agora especifiando o header de Host, para tentarmos acessar nosso site `Host: fintab.com.br`
+
+```
+$ curl https://76.76.21.21 --insecure --verbose --header 'Host: fintab.com.br'
+*   Trying 76.76.21.21:443...
+* Connected to 76.76.21.21 (76.76.21.21) port 443
+* ALPN: curl offers h2,http/1.1
+* (304) (OUT), TLS handshake, Client hello (1):
+* (304) (IN), TLS handshake, Server hello (2):
+* (304) (IN), TLS handshake, Unknown (8):
+* (304) (IN), TLS handshake, Certificate (11):
+* (304) (IN), TLS handshake, CERT verify (15):
+* (304) (IN), TLS handshake, Finished (20):
+* (304) (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / AEAD-CHACHA20-POLY1305-SHA256 / [blank] / UNDEF
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=no-sni.vercel-infra.com
+*  start date: Jan 16 16:15:00 2025 GMT
+*  expire date: Apr 16 16:14:59 2025 GMT
+*  issuer: C=US; O=Let's Encrypt; CN=R10
+*  SSL certificate verify ok.
+* using HTTP/2
+* [HTTP/2] [1] OPENED stream for https://76.76.21.21/
+* [HTTP/2] [1] [:method: GET]
+* [HTTP/2] [1] [:scheme: https]
+* [HTTP/2] [1] [:authority: fintab.com.br]
+* [HTTP/2] [1] [:path: /]
+* [HTTP/2] [1] [user-agent: curl/8.6.0]
+* [HTTP/2] [1] [accept: */*]
+> GET / HTTP/2
+> Host: fintab.com.br
+> User-Agent: curl/8.6.0
+> Accept: */*
+>
+< HTTP/2 200
+< accept-ranges: bytes
+< access-control-allow-origin: *
+< age: 1315510
+< cache-control: public, max-age=0, must-revalidate
+< content-disposition: inline
+< content-type: text/html; charset=utf-8
+< date: Fri, 21 Feb 2025 19:12:23 GMT
+< etag: "1d9fb79049345f08a769328afd29066d"
+< last-modified: Thu, 06 Feb 2025 13:47:13 GMT
+< server: Vercel
+< strict-transport-security: max-age=63072000
+< x-matched-path: /
+< x-vercel-cache: HIT
+< x-vercel-id: gru1::rqbjp-1740165143988-ec229fef8245
+< content-length: 1191
+<
+* Connection #0 to host 76.76.21.21 left intact
+<!DOCTYPE html><html><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width"/><meta name="next-head-count" content="2"/><noscript data-n-css=""></noscript><script defer="" nomodule="" src="/_next/static/chunks/polyfills-78c92fac7aa8fdd8.js"></script><script src="/_next/static/chunks/webpack-4e7214a60fad8e88.js" defer=""></script><script src="/_next/static/chunks/framework-ecc4130bc7a58a64.js" defer=""></script><script src="/_next/static/chunks/main-cb4281779d2d79ab.js" defer=""></script><script src="/_next/static/chunks/pages/_app-753213cf38d40131.js" defer=""></script><script src="/_next/static/chunks/pages/index-6a7ce47cccd82263.js" defer=""></script><script src="/_next/static/ItnDOga9KLr4j8ciO2tSt/_buildManifest.js" defer=""></script><script src="/_next/static/ItnDOga9KLr4j8ciO2tSt/_ssgManifest.js" defer=""></script></head><body><div id="__next"><h1>Renata, eu amo você. Se você me ama, dá uma risadinha! 😎</h1></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{}},"page":"/","query":{},"buildId":"ItnDOga9KLr4j8ciO2tSt","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}</script></body></html>
+```
+
+Logo, quando temos mais de um site hospedado em um mesmo IP, conseguimos acessar o site correto através do campo `Host` no `header` da requisição HTTP.
+
+## Slow-Track: Versionamento da API e Endpoint status
+
+- Breaking Change
+  - Muda a interface (API)
+- Non-breaking Change
+  - Adiciona uma feature, mas não muda a interface
+  - Backward Compatibility
+
+### Versionamento no Path
+
+- URI Path Versioning
+
+Para indicarmos a versão 1 da nossa API, fazemos: `/api/v1/status`
+
+Para o Next.js, como usamos o endereçamento por pastas, temos:
+
+```
+📦 root
+  ├ 📂 pages
+  │  ├ 📂 api
+  │  │  ├ 📂 v1
+  │  │  │  └ 📜 status.js
+```
+
+Para indicarmos a versão 2 da nossa API, é tão fácil quanto mudar 1 por 2: `/api/v2/status`
+
+```
+📦 root
+  ├ 📂 pages
+  │  ├ 📂 api
+  │  │  ├ 📂 v1
+  │  │  │  └ 📜 status.js
+  │  │  ├ 📂 v2 # Acessamos este caminho
+  │  │  │  └ 📜 status.js
+```
+
+### Header Versioning
+
+Neste método, passamos a versão desejada da API como header de nossa requisição http:
+
+```
+Accepts-Version: 1.5
+Accepts-Version: 2023-09-21
+```
+
+### OBS
+
+Note que as duas formas de versionamento não são excludentes, isto é, podemos combinar as duas em nossos sistemas. Um grande exemplo disso é o Stripe (https://stripe.com/blog/api-versioning)
+
+Geralmente, começamos a fazer o versionamento mais simples, com o `URI Path Versioning` e, caso necessário, sofisticamos utilizando o `Header Versioning`.
+
+### Sofisticando as pastas:
+
+Para ficar mais organizados, utilizamos algo que o Next.js nos oferece:
+
+```
+📦 root
+  ├ 📂 pages
+  │  ├ 📂 api
+  │  │  ├ 📂 v1
+  │  │  │  └ 📜 status.js
+```
+
+Note que a aplicação do esquema acima funciona identicamente ao esquema abaixo
+
+```
+📦 root
+  ├ 📂 pages
+  │  ├ 📂 api
+  │  │  ├ 📂 v1
+  │  │  │  ├ 📂 status
+  │  │  │  │  └ 📜 index.js
+```
+
+Com a vantagem de que a segunda opção é mais robusta, já que nos dá a opção de um Path ter vários arquivos dentro de sua pasta.
+
+Logo, atualizamos nossos endpoints para esta organização.
+
+Juntamente com a integração do endpoint, já criamos também os arquivos de teste que seguem mesma forma de organização. Isto é:
+
+```
+📦 root
+  ├ 📂 tests
+  │  ├ 📂 integration
+  │  │  ├ 📂 api
+  │  │  │  ├ 📂 v1
+  │  │  │  │  ├ 📂 status
+  │  │  │  │  │  └ 📜 get.test.js
+```
+
+Onde o `get` indica o método/verbo http que vamos testar neste arquivo. No caso, vamos testar as operações com get
+
+- Os verbos http
+  - get
+  - post
+  - patch
+  - put
+  - delete
+  - ...
