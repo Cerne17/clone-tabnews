@@ -996,3 +996,46 @@ $ docker compose --file infra/compose.yaml up
 ### Observação: A senha do Super-user do postgres está vulnerável!
 
 Depois utilizaremos variáveis de ambiente para protegê-la e, obviamente, a senha será alterada, para que a senha vazada propositalmente na versão atual não cause falhas de segurança no sistema.
+
+# Dia 18
+
+## Fast-Track:
+
+- Criar o módulo database.js
+- Usando TDD para implementar o database.js
+- Variáveis de ambiente
+  - Como evitar que dados estejam expostos no histórico do terminal
+
+## Slow-Track: Criar o módulo database.js
+
+- Vamos usar o `pg` para se conectar ao postgres (v8.11.3)
+
+### Rodando o ambiente de desenvolvimento atualmente
+
+- Ambiente de testes: `npm run test:watch`
+  - Trocamos o comando de `jest --watch .` para `jest --watchAll .`
+  - mantemos este terminal aberto
+- Servidor Web:
+  - em outro terminal, rodamos: `npm run dev`
+  - mantemos este terminal aberto
+- Banco de Dados:
+  - rodamos em um terceiro terminal: `docker compose -f infra/compose.yaml up -d`
+  - como rodamos em `detach`, podemos fechar o terceiro terminal
+
+## Slow-Track: A importância das Variáveis de Ambiente
+
+- Camada da Interface
+  - Onde aplicamos a lógica da aplicação, isto é, toda parte que o usuário vai interagir e que não tem nada haver com as regras de negócio do sistema
+- Camada da Aplicação deve ser o mais próximo possível de stateless
+  - Nesta camada que temos as regras de negócio
+- Camada de Persistência
+  - Banco de Dados armazena o estado atual
+    - Banco de dados executa as regras de negócio
+
+![Camadas do Serviço](./doc-assets/camadas-do-servico.png)
+
+## Slow-Track
+
+### Como executar comandos no terminal sem adicioná-lo ao histórico:
+
+Simplesmente adicione um caractere de espaço antes do comando em si!
