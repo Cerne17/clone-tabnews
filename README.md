@@ -1039,3 +1039,21 @@ Depois utilizaremos variáveis de ambiente para protegê-la e, obviamente, a sen
 ### Como executar comandos no terminal sem adicioná-lo ao histórico:
 
 Simplesmente adicione um caractere de espaço antes do comando em si!
+
+# Dia 19
+
+## Slow-Track: Foi certo fazer o commit do .env
+
+Na documentação do `.dotenv` é dito para não se fazer o commit deste arquivo, mas na documentação do `Next.js` é dito para se fazer.
+
+No nosso caso, é correto se fazer o upload, haja vista que não estamos utilizando - por enquanto - o `.env` para gestão de dados sensíveis, então não há problema algum em fazer o commit. Aliás, o commit só nos ajuda na hora de replicar nosso ambiente de desenvolvimento.
+
+### .env semântico
+
+Já que estamos utilizando nosso .env para apenas configurar nosso ambiente de desenvolvimento, então vamos renomeá-lo como `.env.development` e, assim, podemos utilizar um `.env.production` para gestão de um ambiente de produção. Além destes, ainda podemos ter um `.env`, só que este, não terá prioridade em relação aos outros arquivos `.env`, já que ele é mais genérico.
+
+Concluímos assim, que a diferença entre os diversos tipos de arquivos `.env` é sua ordem de precedência, isto é, um arquivo com maior precedência sobrepõe os valores dos outros arquivos. A ordem é dada, por:
+
+1. `procces.env` (configurado no momento de rodar o script) - maior grau de precedência
+2. `.env.production` & `.env.development`
+3. `.env` - menor grau de precedência
