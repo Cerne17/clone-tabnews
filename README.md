@@ -1119,4 +1119,18 @@ Controller -> Model -> Controller -> View
 ### Postgres vs MySQL
 
 Postgres: Ao se conectar (iniciar uma seção) essa seção precisa estar vinculada a um banco de dados.
+
 MySQL: Pode se conectar sem especificar um banco de dados e só especificar uma vez que já criamos a conexão.
+
+### Usando o node-postgres para Sanitização
+
+Ao realizar uma Query Parametrizada, simplesmente utilize a `Parameterized Query` do `node-postgres`
+
+```js
+const text = "INSERT INTO users(name, email) VALUES($1, $2) RETURNING *";
+const values = ["brianc", "brianc.m.carlson@gmail.com"];
+
+const res = await client.query(text, values);
+console.log(res.rows[0]);
+// { name: 'brianc', email: 'brian.m.carlson@gmail.com' }
+```
