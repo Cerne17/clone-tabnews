@@ -39,3 +39,50 @@ lts/hydrogen
 ```
 
 Note que o `enter` é um caractere especial que representa o final do arquivo, sendo necessário para o arquivo de configuração.
+
+## Nextjs e a Analysis Paralysis
+
+### Analysis Paralysis
+
+A analysis paralysis é um problema que muitas vezes ocorre quando se está começando a aprender uma nova tecnologia. No mercado, é comum terem muitas opções para escolher e - ainda mais no momento em que estamos começando a aprender uma tecnologia nova - parece impossível escolher uma para começar. 
+
+Tanto que, mesmo depois de escolher alguma ferramenta, é comum ainda ficarmos com a dúvida se fizemos ou não a escolha certa.
+
+### Nextjs
+
+O Nextjs é uma framework para React que permite criar aplicações web Full Stack com React. O Nextjs é uma ferramenta diferencial no mercado devido, principalmente, a sua flexibilidade, permitindo ao desenvolvedor a criar suas aplicações da forma que desejar, sem forçar uma forma específica de desenvolvimento.
+
+### Iniciação do projeto node.js e instalação do Nextjs
+
+Para iniciar um projeto node.js, basta executar o comando:
+
+```bash
+npm init
+```
+
+Ou, caso ainda queira pular todas as perguntas, basta executar o comando:
+
+```bash
+npm init -y
+```
+
+onde `-y` significa `yes`, ou seja, sim.
+
+A única alteração que fizemos em todas as perguntas iniciais foi escolher a licença como sendo `MIT`, escolha que exploraremos um pouco mais adiante no curso.
+
+
+### Instalando o Nextjs
+
+Uma vez com o projeto inicializado, basta executar o comando:
+
+```bash
+npm install next@13.1.6
+```
+
+Ainda instalamos as outras dependências necessárias para o projeto, como segue:
+
+```bash
+npm install react@18.2.0 react-dom@18.2.0
+```
+
+Note que, para instalar mais de uma dependência, basta separar as dependências por espaço.
