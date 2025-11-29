@@ -200,5 +200,20 @@ No nosso caso, no entanto, ainda há um outro complicador, o `commit` que querem
 Passo-a-passo:
 
 1. Salvar a versão atual do README.md antes de "voltar no tempo". Temos que fazer isso, porque as alterações novas do arquivo estão como `modified`, ou seja, não estão salvas. Para salvar a versão atual do arquivo em um buffer, fazemos `git stash`.
+2. Voltar a `HEAD` para o penúltimo `commit`: `git rebase -i HEAD~2`. Aqui, abrirá uma lista com os 2 últimos commits. Localize o `commit` que queremos modificar e mude a palavra `pick` para `edit`. Salve esta lista e feche o editor.
+3. Aplique a versão atualizada ao `README.md`, removendo-a do `stash`: `git stash pop`.
+4. Adicione-a ao `staging area`: `git add README.md`.
+5. Faça o `commit` novamente: `git commit --amend`.
+6. Agora, para aplicar as alterações ao repositório, usamos `git rebase --continue`.
+7. Por fim, tendo reescrito a história no Git, faça o `push` para atualizar o repositório remoto: `git push origin <branch-a-ser-atualizada> --force` (No meu caso, a branch era `Dia-5`).
 
-2. Voltar a `HEAD` para o penúltimo `commit`: `git rebase -i HEAD~2`
+Note que o ID de todos os `commits` são imutáveis, logo, quando fazemos um `amend`, o ID do `commit` muda.
+
+### O Caractere `Newline`
+
+O caractere `Newline` é um caractere que representa uma nova linha. No Git, ele é representado por:
+- String: `\n`
+- ASCII: `Chr(10)`
+- Hex: `0x0A`
+
+É por conta deste caractere, que adicionamos explicitamente o `\n` no final do arquivo `.nvmrc`, para que ele fosse considerado como uma nova linha no fim do arquivo, configurando para o Git. o fim do arquivo corretamente.
